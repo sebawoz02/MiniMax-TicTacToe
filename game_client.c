@@ -77,18 +77,13 @@ int main(int argc, char *argv[])
             printBoard();
         }
         if( (msg==0) || (msg==6) ) {
-            printf("Your move: ");
-            if( fgets(client_message, sizeof(client_message), stdin)==NULL ) {
-                printf("Error while reading move\n");
-                return -1;
-            }
-            move = atoi(client_message);
+            // Make the best found move
+            move = minmax(board, depth, alpha, beta, true, player);
             makeMove(move, player);
             printBoard();
             memset(client_message, '\0', sizeof(client_message));
-            // Find the best next move
-            sprintf(client_message, "%d", minmax(board, depth, alpha, beta, player));
 
+            sprintf(client_message, "%d", move);
             if( send(socket_desc, client_message, strlen(client_message), 0)<0 ) {
                 printf("Unable to send message\n");
                 return -1;
@@ -103,12 +98,10 @@ int main(int argc, char *argv[])
                 case 3 : printf("Draw.\n"); break;
                 case 4 : printf("You won. Opponent error.\n"); break;
                 case 5 : printf("You lost. Your error.\n"); break;
+                default: printf("Unknown message.\n"); break;
             }
         }
-
-
     }
-
     close(socket_desc);
     return 0;
 }
