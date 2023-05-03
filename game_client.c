@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
     struct sockaddr_in server_addr;
     char server_message[16], client_message[16];
 
-    short msg, move;
-    char depth, player;
+    int msg, move;
+    int depth, player;
     int alpha, beta;
 
     if(argc != 5){
@@ -60,6 +60,8 @@ int main(int argc, char *argv[])
     bool end_game = false;
     player = atoi(argv[3]);
     depth = atoi(argv[4]);
+    DEPTH = depth;
+    PLAYER=player;
     initializeBoard();
 
     while (!end_game){
@@ -78,7 +80,7 @@ int main(int argc, char *argv[])
         }
         if( (msg==0) || (msg==6) ) {
             // Make the best found move
-            move = minmax(board, depth, alpha, beta, true, player);
+            move = minmax(board, depth - 1, true, player);
             makeMove(move, player);
             printBoard();
             memset(client_message, '\0', sizeof(client_message));
