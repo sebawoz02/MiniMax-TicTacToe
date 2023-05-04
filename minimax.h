@@ -135,7 +135,7 @@ void initializeBoard(){
 // 3 in a row -20000
 
 // for player symbols check fields around - player symbol +30 (2 : +90, 3 : +180), opposite player symbol - break
-// for opposite player symbols - opp symbol close -30 (2 : -90, 3 : -180), player symbol  +50 break
+// for opposite player symbols - opp symbol close -30 (2 : -90, 3 : -180), player symbol  +90 break
 int getEval(int position[ROWS][COLS]){
     int eval = 0;
     if(winCheck(position, PLAYER)) eval += 10000;
@@ -158,7 +158,7 @@ int getEval(int position[ROWS][COLS]){
                     } else{
                         if(position[row][l] == 3 - PLAYER) eval -= ++found*30;
                         else if(position[row][l] == PLAYER) {
-                            eval += 50;
+                            eval += 90;
                             break;
                         }
                     }
@@ -173,7 +173,7 @@ int getEval(int position[ROWS][COLS]){
                     } else{
                         if(position[row][l] == 3 - PLAYER) eval -= ++found*30;
                         else if(position[row][l] == PLAYER) {
-                            eval += 50;
+                            eval += 90;
                             break;
                         }
                     }
@@ -188,7 +188,7 @@ int getEval(int position[ROWS][COLS]){
                     } else{
                         if(position[l][col] == 3 - PLAYER) eval -= ++found*30;
                         else if(position[l][col] == PLAYER) {
-                            eval += 50;
+                            eval += 90;
                             break;
                         }
                     }
@@ -203,7 +203,7 @@ int getEval(int position[ROWS][COLS]){
                     } else{
                         if(position[l][col] == 3 - PLAYER) eval -= ++found*30;
                         else if(position[l][col] == PLAYER) {
-                            eval += 50;
+                            eval += 90;
                             break;
                         }
                     }
@@ -218,7 +218,7 @@ int getEval(int position[ROWS][COLS]){
                     } else{
                         if(position[row-l][col-l] == 3 - PLAYER) eval -= ++found*30;
                         else if(position[row-l][col-l] == PLAYER) {
-                            eval += 50;
+                            eval += 90;
                             break;
                         }
                     }
@@ -234,7 +234,7 @@ int getEval(int position[ROWS][COLS]){
                     } else{
                         if(position[row-l][col+l] == 3 - PLAYER) eval -= ++found*30;
                         else if(position[row-l][col+l] == PLAYER) {
-                            eval += 50;
+                            eval += 90;
                             break;
                         }
                     }
@@ -249,7 +249,7 @@ int getEval(int position[ROWS][COLS]){
                     } else{
                         if(position[row+l][col+l] == 3 - PLAYER) eval -= ++found*30;
                         else if(position[row+l][col+l] == PLAYER) {
-                            eval += 50;
+                            eval += 90;
                             break;
                         }
                     }
@@ -264,7 +264,7 @@ int getEval(int position[ROWS][COLS]){
                     } else{
                         if(position[row+l][col-l] == 3 - PLAYER) eval -= ++found*30;
                         else if(position[row+l][col-l] == PLAYER) {
-                            eval += 50;
+                            eval += 90;
                             break;
                         }
                     }
@@ -285,8 +285,8 @@ int max(int a, int b){
     return a > b ? a : b;
 }
 
-
-int minmax(int position[ROWS][COLS], int depth, int player){
+// START FROM ( [depth given as param] - 1 ) and goes down to 0
+int minmax(int position[ROWS][COLS], int depth, int player, int alpha, int beta){
     if(winCheck(position, PLAYER) || winCheck(position, 3 - PLAYER)
     || loseCheck(position, 3 - PLAYER) || loseCheck(position, PLAYER)){
         return getEval(position);
@@ -296,31 +296,50 @@ int minmax(int position[ROWS][COLS], int depth, int player){
     int bestmove;
     if(player == PLAYER) eval = INT_MIN;
     else eval = INT_MAX;
+    // for each node
     for(size_t i = 0; i < ROWS; i++){
         for (size_t j = 0; j < COLS; ++j) {
             if(position[i][j] == 0){
                 position[i][j] = player;
                 if(depth ==  DEPTH - 1){    // go deeper and find best move
-                    int e = (depth == 0) ? getEval(position) : minmax(position, depth - 1, 3 - player);
+                    int e = (depth == 0) ? getEval(position) : minmax(position, depth - 1, 3 - player, alpha, beta);
                     if(e > eval){
                         eval = e;
+                        alpha = max(alpha, eval);
                         bestmove = (i+1) * 10 + j+1;
                     }
                 } else if(depth != 0){  // go deeper
-                    if(player == PLAYER) eval = max(eval, minmax(position, depth- 1, 3 - player));
-                    else eval = min(eval, minmax(position, depth - 1, 3 - player));
+                    if(player == PLAYER) {
+                        eval = max(eval, minmax(position, depth - 1, 3 - player, alpha, beta));
+                        alpha = max(alpha, eval);
+                    }
+                    else {
+                        eval = min(eval, minmax(position, depth - 1, 3 - player, alpha, beta));
+                        beta = min(beta, eval);
+
+                    }
+
                 }
                 else{   // getEvaluation
-                    if(player == PLAYER) eval = max(eval, getEval(position));
-                    else eval = min(eval, getEval(position));
+                    if(player == PLAYER) {
+                        eval = max(eval, getEval(position));
+                        alpha = max(alpha, eval);
+                    }
+                    else {
+                        eval = min(eval, getEval(position));
+                        beta = min(beta, eval);
+                    }
                 }
                 // undo move
                 position[i][j] = 0;
+                if(beta <= alpha) break;
             }
         }
     }
     if(depth == DEPTH -1) {
-        if(eval <= -10000) printf("I lost already...☠\uFE0F \n");
+
+        if(eval <= -10000) printf("I already lost...☠\uFE0F \n");
+        else if(eval >= 10000) printf("I already won :) \n");
         else printf("Move eval = %d\n", eval);
         return bestmove;
     }
