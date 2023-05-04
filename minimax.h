@@ -270,7 +270,6 @@ int getEval(int position[ROWS][COLS]){
                     }
                 }
             }
-
         }
     }
 
@@ -285,7 +284,6 @@ int max(int a, int b){
     return a > b ? a : b;
 }
 
-// START FROM ( [depth given as param] - 1 ) and goes down to 0
 int minmax(int position[ROWS][COLS], int depth, int player, int alpha, int beta){
     if(winCheck(position, PLAYER) || winCheck(position, 3 - PLAYER)
     || loseCheck(position, 3 - PLAYER) || loseCheck(position, PLAYER)){
@@ -301,26 +299,26 @@ int minmax(int position[ROWS][COLS], int depth, int player, int alpha, int beta)
         for (size_t j = 0; j < COLS; ++j) {
             if(position[i][j] == 0){
                 position[i][j] = player;
-                if(depth ==  DEPTH - 1){    // go deeper and find best move
-                    int e = (depth == 0) ? getEval(position) : minmax(position, depth - 1, 3 - player, alpha, beta);
+                if(depth ==  1){    // go deeper and find best move
+                    int e = (depth == DESTINATED_DEPTH) ? getEval(position) : minmax(position, depth + 1, 3 - player, alpha, beta);
                     if(e > eval){
                         eval = e;
                         alpha = max(alpha, eval);
                         bestmove = (i+1) * 10 + j+1;
                     }
-                } else if(depth != 0){  // go deeper
+                } else if(depth != DESTINATED_DEPTH){  // go deeper
                     if(player == PLAYER) {
-                        eval = max(eval, minmax(position, depth - 1, 3 - player, alpha, beta));
+                        eval = max(eval, minmax(position, depth + 1, 3 - player, alpha, beta));
                         alpha = max(alpha, eval);
                     }
                     else {
-                        eval = min(eval, minmax(position, depth - 1, 3 - player, alpha, beta));
+                        eval = min(eval, minmax(position, depth + 1, 3 - player, alpha, beta));
                         beta = min(beta, eval);
 
                     }
 
                 }
-                else{   // getEvaluation
+                else{   // getEvaluation - destinated depth reached
                     if(player == PLAYER) {
                         eval = max(eval, getEval(position));
                         alpha = max(alpha, eval);
@@ -336,7 +334,7 @@ int minmax(int position[ROWS][COLS], int depth, int player, int alpha, int beta)
             }
         }
     }
-    if(depth == DEPTH -1) {
+    if(depth == 1) {
 
         if(eval <= -10000) printf("I already lost...☠\uFE0F \n");
         else if(eval >= 10000) printf("I already won :) \n");
