@@ -220,6 +220,7 @@ int minmax(int position[ROWS][COLS], int depth, bool maxplayer, int alpha, int b
     else eval = INT_MAX;
     // for each node
     for(size_t i = 0; i < ROWS; i++){
+        if(beta <= alpha) break;    // alpha-beta cutoff
         for (size_t j = 0; j < COLS; ++j) {
             if(position[i][j] == 0){
                 // simulate move
