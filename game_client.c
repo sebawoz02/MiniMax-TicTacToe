@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
         }
         if( (msg==0) || (msg==6) ) {
             // Make the best found move
-            move = minmax(board, depth - 1, true, player);
+            move = minmax(board, 1, true, INT_MIN, INT_MAX);
             makeMove(move, player);
             printBoard();
             memset(client_message, '\0', sizeof(client_message));
