@@ -135,15 +135,17 @@ void initializeBoard(){
  * Opponent 3 symbols +20000
  *
  * for each winning combination [playerSymbols : opponentSymbols] :
- *  - [3:0] +6
- *  - [0:3] -6
- *  - [2:0] +3
- *  - [0:2] -3
- *  - [1:0] +1
- *   -[0:1] -1
+ *  - [3:0] +9
+ *  - [0:3] -9
+ *  - [2:0] +5
+ *  - [0:2] -4
+ *  - [1:0] +2
+ *   -[0:1] -2
  * for each loosing combination [playerSymbols : opponentSymbols] :
- * - [2:0] -2
- * - [0:2] +2
+ * - [2:0] -3
+ * - [0:2] +4
+ * - [1:0] -1
+ * - [0:1] +2
  * */
 int getEval(int position[ROWS][COLS]){
     int eval = 0;
@@ -163,12 +165,12 @@ int getEval(int position[ROWS][COLS]){
         if(opponents == 4) return -10000;
         if(players == 4) return 10000;
 
-        if(players == 1 && opponents == 0) eval += 1;
-        else if(players == 0 && opponents == 1) eval -= 1;
-        else if(players == 2 && opponents == 0) eval += 3;
-        else if(players == 0 && opponents == 2) eval -= 3;
-        else if(players == 3 && opponents == 0) eval += 6;
-        else if(players == 0 && opponents == 3) eval -= 6;
+        if(players == 1 && opponents == 0) eval += 2;
+        else if(players == 0 && opponents == 1) eval -= 2;
+        else if(players == 2 && opponents == 0) eval += 5;
+        else if(players == 0 && opponents == 2) eval -= 4;
+        else if(players == 3 && opponents == 0) eval += 9;
+        else if(players == 0 && opponents == 3) eval -= 9;
     }
 
     // loosing combinations
@@ -185,10 +187,11 @@ int getEval(int position[ROWS][COLS]){
         if(players == 3) return -20000;
         if(opponents == 3) return 20000;
 
-        if(players == 2 && opponents == 0) eval -= 2;
-        else if(players == 0 && opponents == 2) eval += 2;
+        if(players == 2 && opponents == 0) eval -= 3;
+        else if(players == 0 && opponents == 2) eval += 4;
+        else if(players == 1 && opponents == 0) eval -= 1;
+        else if(players == 0 && opponents == 1) eval += 2;
     }
-
     return eval;
 }
 
