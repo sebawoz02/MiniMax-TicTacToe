@@ -1,5 +1,5 @@
 # MinMax-TicTacToe
-Game client program for playing tic tac toe 5x5 with minmax algorithm
+Game client program for playing tic tac toe 5x5 with minmax algorithm with alpha-beta pruning.
 
 # Files:
 - minimax.h         // minimax algorithm and game handling
