@@ -16,12 +16,15 @@
 #define ROWS 5
 #define COLS 5
 
+// 5x5 game board
 int board[ROWS][COLS];
 
+// depth of minimax algorithm
 int DESTINATED_DEPTH = 0 ;
+// player 1 for X and 2 for O
 int PLAYER = 0 ;
 
-
+// all loosing combinations (3 in a row)
 const int lose[48][3][2] = {
         { {0,0}, {0,1}, {0,2} }, { {0,1}, {0,2}, {0,3} }, { {0,2}, {0,3}, {0,4} },
         { {1,0}, {1,1}, {1,2} }, { {1,1}, {1,2}, {1,3} }, { {1,2}, {1,3}, {1,4} },
@@ -41,6 +44,7 @@ const int lose[48][3][2] = {
         { {1,4}, {2,3}, {3,2} }, { {2,3}, {3,2}, {4,1} }, { {2,4}, {3,3}, {4,2} }
 };
 
+// all winning combinations (4 in a row)
 const int win[28][4][2] = {
         { {0,0}, {0,1}, {0,2}, {0,3} },
         { {1,0}, {1,1}, {1,2}, {1,3} },
@@ -73,6 +77,7 @@ const int win[28][4][2] = {
 };
 
 
+// returns true if any of the loosing combinations consists of "player" symbols
 bool loseCheck(const int position[ROWS][COLS],const int player){
     bool l=false;
     for(int i=0; i<48; i++) {
@@ -85,6 +90,8 @@ bool loseCheck(const int position[ROWS][COLS],const int player){
     return l;
 }
 
+
+// returns true if any of winning combinations consists of "player" symbols
 bool winCheck(const int position[ROWS][COLS], const int player) {
     bool w = false;
     for (int i = 0; i < 28; i++) {
@@ -97,13 +104,25 @@ bool winCheck(const int position[ROWS][COLS], const int player) {
     return w;
 }
 
+
+/* Possible moves
+11 12 13 14 15
+21 22 23 24 25
+31 32 33 34 35
+41 42 43 44 45
+51 52 53 54 55
+*/
 void makeMove(int move, int player){
     size_t row,col;
     row = (move/10)-1;
     col = (move%10)-1;
-    board[row][col] = player;
+    if(row<5 && col<5){
+         board[row][col] = player;
+    }
+    else printf("Wrong parameter\n");
 }
 
+// Displays the current state of the board
 void printBoard(){
     printf("  1 2 3 4 5\n");
     for(int i=0; i<5; i++) {
@@ -119,6 +138,7 @@ void printBoard(){
     printf("\n");
 }
 
+// Sets every square on the board to empty
 void initializeBoard(){
     for (int i = 0; i < 5; ++i) {
         for (int j = 0; j < 5; ++j) {
