@@ -173,14 +173,11 @@ int getEval(int position[ROWS][COLS]){
     for (int i = 0; i < 28; ++i) {
         char players = 0;
         char opponents = 0;
-        if(position[win[i][0][0]][win[i][0][1]] == PLAYER) players++;
-        else if(position[win[i][0][0]][win[i][0][1]] == 3 - PLAYER) opponents++;
-        if(position[win[i][1][0]][win[i][1][1]] == PLAYER) players++;
-        else if(position[win[i][1][0]][win[i][1][1]] == 3 - PLAYER) opponents++;
-        if(position[win[i][2][0]][win[i][2][1]] == PLAYER) players++;
-        else if(position[win[i][2][0]][win[i][2][1]] == 3 - PLAYER) opponents++;
-        if(position[win[i][3][0]][win[i][3][1]] == PLAYER) players++;
-        else if(position[win[i][3][0]][win[i][3][1]] == 3 - PLAYER) opponents++;
+            
+        for(size_t j = 0; j<4; j++){
+                if(position[win[i][j][0]][win[i][j][1]] == PLAYER) players++;
+                else if(position[win[i][j][0]][win[i][j][1]] == 3 - PLAYER) opponents++;
+        }
 
         if(opponents == 4) return -10000;
         if(players == 4) return 10000;
@@ -197,12 +194,11 @@ int getEval(int position[ROWS][COLS]){
     for (int i = 0; i < 48; ++i) {
         char players = 0;
         char opponents = 0;
-        if(position[lose[i][0][0]][lose[i][0][1]] == PLAYER) players++;
-        else if(position[lose[i][0][0]][lose[i][0][1]] == 3 - PLAYER) opponents++;
-        if(position[lose[i][1][0]][lose[i][1][1]] == PLAYER) players++;
-        else if(position[lose[i][1][0]][lose[i][1][1]] == 3 - PLAYER) opponents++;
-        if(position[lose[i][2][0]][lose[i][2][1]] == PLAYER) players++;
-        else if(position[lose[i][2][0]][lose[i][2][1]] == 3 - PLAYER) opponents++;
+        
+        for(size_t j = 0; j<3;j++){
+                if(position[lose[i][j][0]][lose[i][j][1]] == PLAYER) players++;
+                else if(position[lose[i][j][0]][lose[i][j][1]] == 3 - PLAYER) opponents++;
+        }
 
         if(players == 3) return -20000;
         if(opponents == 3) return 20000;
