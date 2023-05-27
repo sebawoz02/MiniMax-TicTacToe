@@ -2,10 +2,10 @@
 #include <arpa/inet.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include <unistd.h>
+#include <limits.h>
 
-#include "minmax.h"
+#include "minimax.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,7 +15,6 @@ int main(int argc, char *argv[])
 
     int msg, move;
     int depth, player;
-    int alpha, beta;
 
     if(argc != 5){
         printf("Wrong number of arguments\n");
@@ -60,8 +59,8 @@ int main(int argc, char *argv[])
     bool end_game = false;
     player = atoi(argv[3]);
     depth = atoi(argv[4]);
-    DEPTH = depth;
-    PLAYER=player;
+    setDestinatedDepth(depth);
+    setPlayerNum(player);
     initializeBoard();
 
     while (!end_game){
@@ -80,7 +79,7 @@ int main(int argc, char *argv[])
         }
         if( (msg==0) || (msg==6) ) {
             // Make the best found move
-            move = minmax(board, 1, true, INT_MIN, INT_MAX);
+            move = minmax(getCurBoard(), 1, true, INT_MIN, INT_MAX);
             makeMove(move, player);
             printBoard();
             memset(client_message, '\0', sizeof(client_message));
@@ -107,3 +106,4 @@ int main(int argc, char *argv[])
     close(socket_desc);
     return 0;
 }
+
